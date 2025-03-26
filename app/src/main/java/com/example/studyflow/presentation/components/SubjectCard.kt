@@ -1,5 +1,6 @@
 package com.example.studyflow.presentation.components
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,11 +40,7 @@ fun SubjectCard(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-<<<<<<< HEAD
                 painter = painterResource(R.drawable.img_books),
-=======
-                painter = painterResource(R.drawable.books),
->>>>>>> a70146e4786adf9fb18010758f902a7f2d25629c
                 contentDescription = subjectName,
                 modifier = Modifier.size(80.dp)
             )

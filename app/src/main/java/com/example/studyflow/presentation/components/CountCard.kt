@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 package com.example.studyflow.presentation.components
-=======
-package com.example.studyflow.components
->>>>>>> a70146e4786adf9fb18010758f902a7f2d25629c
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,9 +40,4 @@ fun CountCard(
             )
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
-
->>>>>>> a70146e4786adf9fb18010758f902a7f2d25629c
