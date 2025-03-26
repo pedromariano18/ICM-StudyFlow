@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+<<<<<<< HEAD
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,6 +21,14 @@ import com.example.studyflow.presentation.theme.StudyflowTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import dagger.hilt.android.AndroidEntryPoint
+=======
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.studyflow.presentation.DashboardScreen
+import com.example.studyflow.ui.theme.StudyFlowTheme
+>>>>>>> a70146e4786adf9fb18010758f902a7f2d25629c
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -48,6 +57,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+<<<<<<< HEAD
             if (isBound) {
                 StudyflowTheme {
                     DestinationsNavHost(
@@ -56,11 +66,20 @@ class MainActivity : ComponentActivity() {
                             dependency(SessionScreenRouteDestination) { timerService }
                         }
                     )
+=======
+            StudyFlowTheme {
+                DashboardScreen()
+
+>>>>>>> a70146e4786adf9fb18010758f902a7f2d25629c
                 }
             }
         }
         requestPermission()
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> a70146e4786adf9fb18010758f902a7f2d25629c
 
     private fun requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
