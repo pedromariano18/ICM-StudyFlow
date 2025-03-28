@@ -94,4 +94,13 @@ dependencies {
 
     //Desugaring
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 }
+
+apply(plugin = "com.google.gms.google-services")
+
