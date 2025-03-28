@@ -63,6 +63,9 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import com.example.studyflow.presentation.destinations.AuthScreenDestination
+import com.example.studyflow.presentation.NavGraphs
+import com.google.firebase.auth.FirebaseAuth
 
 @Destination
 @Composable
@@ -93,7 +96,8 @@ fun DashboardScreenRoute(
         },
         onStartSessionButtonClick = {
             navigator.navigate(SessionScreenRouteDestination())
-        }
+        },
+        navigator = navigator
     )
 }
 
@@ -107,7 +111,8 @@ private fun DashboardScreen(
     snackbarEvent: SharedFlow<SnackbarEvent>,
     onSubjectCardClick: (Int?) -> Unit,
     onTaskCardClick: (Int?) -> Unit,
-    onStartSessionButtonClick: () -> Unit
+    onStartSessionButtonClick: () -> Unit,
+    navigator: DestinationsNavigator
 ) {
 
     var isAddSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -159,7 +164,16 @@ private fun DashboardScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        topBar = { DashboardScreenTopBar() }
+        topBar = {
+            DashboardScreenTopBar(
+                onLogoutClick = {
+                    FirebaseAuth.getInstance().signOut()
+                    navigator.navigate(AuthScreenDestination) {
+                        popUpTo(NavGraphs.root.route) { inclusive = true }
+                    }
+                }
+            )
+        }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -221,13 +235,23 @@ private fun DashboardScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DashboardScreenTopBar() {
+private fun DashboardScreenTopBar(
+    onLogoutClick: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = {
             Text(
                 text = "StudyFlow",
                 style = MaterialTheme.typography.headlineMedium
             )
+        },
+        navigationIcon = {
+            IconButton(onClick = onLogoutClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.log_out),
+                    contentDescription = "Logout"
+                )
+            }
         }
     )
 }
