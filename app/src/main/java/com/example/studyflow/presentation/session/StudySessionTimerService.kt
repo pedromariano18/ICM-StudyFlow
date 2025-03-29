@@ -4,10 +4,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
+import com.example.studyflow.R
 import com.example.studyflow.util.Constants.ACTION_SERVICE_CANCEL
 import com.example.studyflow.util.Constants.ACTION_SERVICE_START
 import com.example.studyflow.util.Constants.ACTION_SERVICE_STOP
@@ -34,6 +36,9 @@ class StudySessionTimerService : Service() {
     private val binder = StudySessionTimerBinder()
 
     private lateinit var timer: Timer
+    private var mediaPlayer: MediaPlayer? = null
+    private var musicPosition: Int = 0
+
     var duration: Duration = Duration.ZERO
         private set
     var seconds = mutableStateOf("00")
@@ -109,6 +114,16 @@ class StudySessionTimerService : Service() {
         onTick: (h: String, m: String, s: String) -> Unit
     ) {
         currentTimerState.value = TimerState.STARTED
+
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.study_music)
+            mediaPlayer?.isLooping = true
+        }
+
+        // Retoma a música da posição anterior
+        mediaPlayer?.seekTo(musicPosition)
+        mediaPlayer?.start()
+
         timer = fixedRateTimer(initialDelay = 1000L, period = 1000L) {
             duration = duration.plus(1.seconds)
             updateTimeUnits()
@@ -120,6 +135,11 @@ class StudySessionTimerService : Service() {
         if (this::timer.isInitialized) {
             timer.cancel()
         }
+
+        // Guarda posição da música antes de parar
+        musicPosition = mediaPlayer?.currentPosition ?: 0
+
+        mediaPlayer?.pause() // Em vez de stop
         currentTimerState.value = TimerState.STOPPED
     }
 
@@ -147,12 +167,3 @@ enum class TimerState {
     STARTED,
     STOPPED
 }
-
-
-
-
-
-
-
-
-
