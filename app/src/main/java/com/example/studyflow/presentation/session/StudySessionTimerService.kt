@@ -16,6 +16,7 @@ import com.example.studyflow.util.Constants.ACTION_SERVICE_STOP
 import com.example.studyflow.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.studyflow.util.Constants.NOTIFICATION_CHANNEL_NAME
 import com.example.studyflow.util.Constants.NOTIFICATION_ID
+import com.example.studyflow.util.NotificationSender
 import com.example.studyflow.util.pad
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Timer
@@ -141,7 +142,14 @@ class StudySessionTimerService : Service() {
 
         mediaPlayer?.pause() // Em vez de stop
         currentTimerState.value = TimerState.STOPPED
+
+        NotificationSender.sendBasicNotification(
+            context = this,
+            title = "Parabéns 🎉",
+            message = "Terminaste uma sessão de estudo com sucesso!"
+        )
     }
+
 
     private fun cancelTimer() {
         duration = Duration.ZERO

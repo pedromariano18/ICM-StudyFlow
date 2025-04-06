@@ -1,5 +1,6 @@
 package com.example.studyflow.presentation.subject
 
+import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -62,6 +63,7 @@ class SubjectViewModel @Inject constructor(
 
     init {
         fetchSubject()
+        Log.d("SubjectVM", "ViewModel criado com subjectId: ${savedStateHandle.get<Int>("subjectId")}")
     }
 
     fun onEvent(event: SubjectEvent) {

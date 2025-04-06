@@ -27,6 +27,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
+import androidx.compose.ui.layout.ContentScale
+
 
 @RootNavGraph(start = true)
 @Destination
@@ -82,7 +84,7 @@ fun AuthScreen(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Logo no topo
+        // Logo
         Image(
             painter = painterResource(id = R.drawable.study_logo),
             contentDescription = "App Logo",
@@ -91,7 +93,7 @@ fun AuthScreen(
                 .size(220.dp)
         )
 
-        // Campos de login
+        // login
         TextField(
             value = viewModel.email,
             onValueChange = { viewModel.email = it.trim() },

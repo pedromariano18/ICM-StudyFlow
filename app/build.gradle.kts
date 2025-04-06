@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -11,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.studyflow"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -100,6 +102,15 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // QR Code Scanner
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+
 }
 
 apply(plugin = "com.google.gms.google-services")

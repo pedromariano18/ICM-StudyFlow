@@ -1,5 +1,6 @@
 package com.example.studyflow.presentation.dashboard
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -65,13 +67,27 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import com.example.studyflow.presentation.destinations.AuthScreenDestination
 import com.example.studyflow.presentation.NavGraphs
+import com.example.studyflow.presentation.destinations.QrScannerScreenRouteDestination
+import com.example.studyflow.util.NotificationSender
 import com.google.firebase.auth.FirebaseAuth
+import androidx.core.content.edit
+import androidx.work.OneTimeWorkRequestBuilder
+import com.example.studyflow.util.InactivityWorker
+
 
 @Destination
 @Composable
 fun DashboardScreenRoute(
     navigator: DestinationsNavigator
 ) {
+    val context = LocalContext.current
+
+    // 🕒 Guardar último acesso
+    val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+    prefs.edit().putLong("last_open", System.currentTimeMillis()).apply()
+
+    // 🔔 Agendar notificação motivacional (modo teste = true)
+    com.example.studyflow.util.ReminderScheduler.scheduleInactivityReminder(context, testMode = true)
 
     val viewModel: DashboardViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -100,6 +116,7 @@ fun DashboardScreenRoute(
         navigator = navigator
     )
 }
+
 
 
 @Composable
@@ -171,6 +188,9 @@ private fun DashboardScreen(
                     navigator.navigate(AuthScreenDestination) {
                         popUpTo(NavGraphs.root.route) { inclusive = true }
                     }
+                },
+                onQrClick = {
+                    navigator.navigate(QrScannerScreenRouteDestination)
                 }
             )
         }
@@ -208,6 +228,40 @@ private fun DashboardScreen(
                     Text(text = "Start Study Session")
                 }
             }
+            item {
+                val context = LocalContext.current
+
+                Button(
+                    onClick = {
+                        NotificationSender.sendBasicNotification(context)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 48.dp)
+                ) {
+                    Text(text = "🔔 Testar Notificação")
+                }
+            }
+            item {
+                val context = LocalContext.current
+
+                Button(
+                    onClick = {
+                        val request = OneTimeWorkRequestBuilder<InactivityWorker>()
+                            .setInitialDelay(5, java.util.concurrent.TimeUnit.SECONDS)
+                            .addTag("test_inactivity")
+                            .build()
+
+                        androidx.work.WorkManager.getInstance(context).enqueue(request)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 48.dp, vertical = 8.dp)
+                ) {
+                    Text("▶️ Testar InactivityWorker")
+                }
+            }
+
             tasksList(
                 sectionTitle = "UPCOMING TASKS",
                 emptyListText = "You don't have any upcoming tasks.\n " +
@@ -236,7 +290,8 @@ private fun DashboardScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DashboardScreenTopBar(
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onQrClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -250,6 +305,14 @@ private fun DashboardScreenTopBar(
                 Icon(
                     painter = painterResource(id = R.drawable.log_out),
                     contentDescription = "Logout"
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onQrClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.img_qr_scanner),
+                    contentDescription = "Scan QR"
                 )
             }
         }
