@@ -16,7 +16,7 @@ object ReminderScheduler {
                 .addTag("test_reminder")
                 .build()
         } else {
-            // ✅ Notificação diária às 9h
+            // Notificação diária às 9h
             val now = Calendar.getInstance()
             val target = Calendar.getInstance().apply {
                 set(Calendar.HOUR_OF_DAY, 9)
@@ -43,7 +43,7 @@ object ReminderScheduler {
         val delay = if (testMode) 1L else 3L
 
         val workRequest = OneTimeWorkRequestBuilder<InactivityWorker>()
-            .setInitialDelay(delay, TimeUnit.DAYS)
+            .setInitialDelay(delay, if (testMode) TimeUnit.MINUTES else TimeUnit.DAYS)
             .addTag("inactivity_reminder")
             .build()
 

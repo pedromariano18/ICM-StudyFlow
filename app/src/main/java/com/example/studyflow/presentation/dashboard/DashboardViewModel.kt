@@ -173,4 +173,22 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    fun getRecommendations(): List<Subject> {
+        val sessions = recentSessions.value
+
+        val subjectProgressoMap = state.value.subjects.associateWith { subject ->
+            val studiedMinutes = sessions
+                .filter { it.sessionSubjectId == subject.subjectId }
+                .sumOf { it.duration }
+
+            val studiedHours = studiedMinutes / 60f
+            studiedHours / (subject.goalHours.takeIf { it > 0 } ?: 1f)
+        }
+
+        return subjectProgressoMap.entries
+            .sortedBy { it.value }
+            .map { it.key }
+            .take(3)
+    }
+
 }

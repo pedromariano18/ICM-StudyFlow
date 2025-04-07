@@ -2,6 +2,7 @@ package com.example.studyflow.presentation.dashboard
 
 import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -71,8 +72,10 @@ import com.example.studyflow.presentation.destinations.QrScannerScreenRouteDesti
 import com.example.studyflow.util.NotificationSender
 import com.google.firebase.auth.FirebaseAuth
 import androidx.core.content.edit
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.OneTimeWorkRequestBuilder
 import com.example.studyflow.util.InactivityWorker
+import com.example.studyflow.util.ReminderScheduler
 
 
 @Destination
@@ -82,17 +85,19 @@ fun DashboardScreenRoute(
 ) {
     val context = LocalContext.current
 
-    // 🕒 Guardar último acesso
+    // Guarda a data do último uso (só para manter o contexto do app)
     val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
     prefs.edit().putLong("last_open", System.currentTimeMillis()).apply()
 
-    // 🔔 Agendar notificação motivacional (modo teste = true)
-    com.example.studyflow.util.ReminderScheduler.scheduleInactivityReminder(context, testMode = true)
+    // Agenda a notificação motivacional automaticamente (modo teste = true)
+    ReminderScheduler.scheduleInactivityReminder(context, testMode = true)
+
 
     val viewModel: DashboardViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val tasks by viewModel.tasks.collectAsStateWithLifecycle()
     val recentSessions by viewModel.recentSessions.collectAsStateWithLifecycle()
+    val recommendations = viewModel.getRecommendations()
 
     DashboardScreen(
         state = state,
@@ -113,7 +118,8 @@ fun DashboardScreenRoute(
         onStartSessionButtonClick = {
             navigator.navigate(SessionScreenRouteDestination())
         },
-        navigator = navigator
+        navigator = navigator,
+        recommendations = recommendations
     )
 }
 
@@ -129,7 +135,8 @@ private fun DashboardScreen(
     onSubjectCardClick: (Int?) -> Unit,
     onTaskCardClick: (Int?) -> Unit,
     onStartSessionButtonClick: () -> Unit,
-    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator,
+    recommendations: List<Subject>
 ) {
 
     var isAddSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -178,6 +185,7 @@ private fun DashboardScreen(
             isDeleteSessionDialogOpen = false
         }
     )
+
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -283,7 +291,65 @@ private fun DashboardScreen(
                     isDeleteSessionDialogOpen = true
                 }
             )
+
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp)
+                ) {
+                    Text(
+                        text = "RECOMENDAÇÕES DE ESTUDO",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    if (recommendations.isEmpty()) {
+                        Text(
+                            text = "Sem recomendações no momento.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
+                        )
+                    } else {
+                        recommendations.forEach { subject ->
+                            val subjectSessions = recentSessions.filter { it.sessionSubjectId == subject.subjectId }
+                            val minutes = subjectSessions.sumOf { it.duration }
+                            val hours = minutes / 60f
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                                    .background(Color(0xFFF0F0F0), shape = MaterialTheme.shapes.medium)
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.img_books), // Usa um ícone de livro se tiveres
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .padding(end = 8.dp),
+                                        tint = Color(0xFF3F51B5)
+                                    )
+                                    Text(
+                                        text = subject.name,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                                Text(
+                                    text = "${"%.1f".format(hours)}/${subject.goalHours}h",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
+
     }
 }
 
@@ -345,6 +411,8 @@ private fun CountCardsSection(
             count = goalHours
         )
     }
+
+
 }
 
 @Composable

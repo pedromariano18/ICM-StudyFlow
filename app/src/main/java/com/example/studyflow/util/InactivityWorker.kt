@@ -11,7 +11,7 @@ class InactivityWorker(
 ) : Worker(context, params) {
 
     override fun doWork(): Result {
-        Log.d("INACTIVITY", "🟢 Worker executado!")
+        Log.d("INACTIVITY", "Worker executado!")
 
         NotificationSender.sendBasicNotification(
             context = applicationContext,
