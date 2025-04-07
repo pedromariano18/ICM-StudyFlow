@@ -83,7 +83,6 @@ private val darkColors = darkColorScheme(
 @Composable
 fun StudyflowTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {

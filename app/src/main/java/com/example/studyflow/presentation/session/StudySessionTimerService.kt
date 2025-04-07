@@ -121,7 +121,7 @@ class StudySessionTimerService : Service() {
             mediaPlayer?.isLooping = true
         }
 
-        // Retoma a música da posição anterior
+        // Retoma a música da posição pnde estava
         mediaPlayer?.seekTo(musicPosition)
         mediaPlayer?.start()
 
@@ -137,7 +137,7 @@ class StudySessionTimerService : Service() {
             timer.cancel()
         }
 
-        // Guarda posição da música antes de parar
+        // Guarda a posição da música antes de parar
         musicPosition = mediaPlayer?.currentPosition ?: 0
 
         mediaPlayer?.pause() // Em vez de stop

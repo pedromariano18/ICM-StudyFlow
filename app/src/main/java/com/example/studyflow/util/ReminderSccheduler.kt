@@ -1,15 +1,19 @@
 package com.example.studyflow.util
 
 import android.content.Context
-import androidx.work.*
-import java.util.*
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 object ReminderScheduler {
 
     fun scheduleDailyReminder(context: Context, testMode: Boolean = false) {
         val workRequest = if (testMode) {
-            // Notificação em 1 minuto (apenas para testar)
+            // Notificação em 1 minuto
             PeriodicWorkRequestBuilder<DailyReminderWorker>(
                 15, TimeUnit.MINUTES // mínimo permitido pelo Android
             ).setInitialDelay(1, TimeUnit.MINUTES)

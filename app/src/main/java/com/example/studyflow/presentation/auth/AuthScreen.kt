@@ -42,7 +42,6 @@ fun AuthScreen(
     val errorMessage = viewModel.errorMessage
     var registerError by remember { mutableStateOf<String?>(null) }
 
-    // Redireciona para o dashboard se estiver autenticado
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
             navController.navigate(DashboardScreenRouteDestination.route) {
@@ -51,7 +50,6 @@ fun AuthScreen(
         }
     }
 
-    // Launcher para login com Google
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -84,7 +82,6 @@ fun AuthScreen(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Logo
         Image(
             painter = painterResource(id = R.drawable.study_logo),
             contentDescription = "App Logo",
@@ -93,7 +90,6 @@ fun AuthScreen(
                 .size(220.dp)
         )
 
-        // login
         TextField(
             value = viewModel.email,
             onValueChange = { viewModel.email = it.trim() },
@@ -113,7 +109,6 @@ fun AuthScreen(
                 .padding(vertical = 4.dp)
         )
 
-        // Login e Criar Conta lado a lado
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -145,7 +140,6 @@ fun AuthScreen(
             }
         }
 
-        // Erro de login ou registo
         errorMessage?.let {
             Text(text = it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
@@ -154,7 +148,6 @@ fun AuthScreen(
             Text(text = it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
 
-        // Botão com imagem do Google
         Image(
             painter = painterResource(id = R.drawable.google1),
             contentDescription = "Login com Google",

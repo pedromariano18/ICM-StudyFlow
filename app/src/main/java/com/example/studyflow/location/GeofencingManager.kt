@@ -18,13 +18,6 @@ class GeofencingManager(private val context: Context) {
         LocationServices.getGeofencingClient(context)
     }
 
-    /**
-     * Adiciona um geofence para uma área específica.
-     * @param requestId Identificador único para o geofence.
-     * @param latitude Latitude do centro da área.
-     * @param longitude Longitude do centro da área.
-     * @param radius Raio em metros para a área.
-     */
     fun addGeofence(
         requestId: String,
         latitude: Double,
@@ -61,9 +54,6 @@ class GeofencingManager(private val context: Context) {
             }
     }
 
-    /**
-     * Remove o geofence com base no requestId.
-     */
     fun removeGeofence(requestId: String) {
         geofencingClient.removeGeofences(listOf(requestId))
             .addOnSuccessListener {

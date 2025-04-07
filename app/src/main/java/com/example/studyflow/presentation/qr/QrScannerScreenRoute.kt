@@ -1,6 +1,5 @@
 package com.example.studyflow.presentation.qr
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -24,7 +23,6 @@ fun QrScannerScreenRoute(navigator: DestinationsNavigator) {
                 return@QrScannerScreen
             }
 
-            // Aqui podes usar o ViewModel real para verificar a base de dados (só exemplo):
             val idsValidos = listOf(1, 2, 3, 4)
             if (subjectId !in idsValidos) {
                 Toast.makeText(context, "Disciplina não encontrada!", Toast.LENGTH_SHORT).show()

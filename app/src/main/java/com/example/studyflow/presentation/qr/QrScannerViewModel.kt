@@ -1,8 +1,8 @@
 package com.example.studyflow.presentation.qr
 
 import androidx.lifecycle.ViewModel
-import com.example.studyflow.presentation.subject.SubjectScreenNavArgs
 import com.example.studyflow.presentation.destinations.SubjectScreenRouteDestination
+import com.example.studyflow.presentation.subject.SubjectScreenNavArgs
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -20,8 +20,7 @@ class QrScannerViewModel @Inject constructor() : ViewModel() {
         }
     }
     fun subjectExists(id: Int): Boolean {
-        // Substitui por tua fonte real
-        val existingSubjects = listOf(1, 2, 3, 4) // Exemplo: IDs válidos
+        val existingSubjects = listOf(1, 2, 3, 4)
         return id in existingSubjects
     }
 }

@@ -45,37 +45,34 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.work.OneTimeWorkRequestBuilder
 import com.example.studyflow.R
 import com.example.studyflow.domain.model.Session
 import com.example.studyflow.domain.model.Subject
 import com.example.studyflow.domain.model.Task
+import com.example.studyflow.presentation.NavGraphs
 import com.example.studyflow.presentation.components.AddSubjectDialog
 import com.example.studyflow.presentation.components.CountCard
 import com.example.studyflow.presentation.components.DeleteDialog
 import com.example.studyflow.presentation.components.SubjectCard
 import com.example.studyflow.presentation.components.studySessionsList
 import com.example.studyflow.presentation.components.tasksList
+import com.example.studyflow.presentation.destinations.AuthScreenDestination
+import com.example.studyflow.presentation.destinations.QrScannerScreenRouteDestination
 import com.example.studyflow.presentation.destinations.SessionScreenRouteDestination
 import com.example.studyflow.presentation.destinations.SubjectScreenRouteDestination
 import com.example.studyflow.presentation.destinations.TaskScreenRouteDestination
 import com.example.studyflow.presentation.subject.SubjectScreenNavArgs
 import com.example.studyflow.presentation.task.TaskScreenNavArgs
+import com.example.studyflow.util.InactivityWorker
+import com.example.studyflow.util.NotificationSender
+import com.example.studyflow.util.ReminderScheduler
 import com.example.studyflow.util.SnackbarEvent
+import com.google.firebase.auth.FirebaseAuth
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
-import com.example.studyflow.presentation.destinations.AuthScreenDestination
-import com.example.studyflow.presentation.NavGraphs
-import com.example.studyflow.presentation.destinations.QrScannerScreenRouteDestination
-import com.example.studyflow.util.NotificationSender
-import com.google.firebase.auth.FirebaseAuth
-import androidx.core.content.edit
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.work.OneTimeWorkRequestBuilder
-import com.example.studyflow.util.InactivityWorker
-import com.example.studyflow.util.ReminderScheduler
 
 
 @Destination
@@ -84,15 +81,9 @@ fun DashboardScreenRoute(
     navigator: DestinationsNavigator
 ) {
     val context = LocalContext.current
-
-    // Guarda a data do último uso (só para manter o contexto do app)
     val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
     prefs.edit().putLong("last_open", System.currentTimeMillis()).apply()
-
-    // Agenda a notificação motivacional automaticamente (modo teste = true)
     ReminderScheduler.scheduleInactivityReminder(context, testMode = true)
-
-
     val viewModel: DashboardViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val tasks by viewModel.tasks.collectAsStateWithLifecycle()
@@ -123,8 +114,6 @@ fun DashboardScreenRoute(
     )
 }
 
-
-
 @Composable
 private fun DashboardScreen(
     state: DashboardState,
@@ -141,7 +130,6 @@ private fun DashboardScreen(
 
     var isAddSubjectDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isDeleteSessionDialogOpen by rememberSaveable { mutableStateOf(false) }
-
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {

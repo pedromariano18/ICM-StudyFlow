@@ -26,8 +26,8 @@ object StudyUtils {
             action = Constants.ACTION_SERVICE_START
         )
 
-        Toast.makeText(context, "🟢 Modo Estudo Ativado", Toast.LENGTH_SHORT).show()
-        Log.d("StudyMode", "Modo Estudo ATIVADO: entrou na geofence")
+        Toast.makeText(context, " Modo Estudo Ativado", Toast.LENGTH_SHORT).show()
+        Log.d("StudyMode", " Modo Estudo ATIVADO: entrou na geofence")
     }
 
     fun disableStudyMode(context: Context) {
@@ -40,9 +40,7 @@ object StudyUtils {
             context = context,
             action = Constants.ACTION_SERVICE_CANCEL
         )
-
-        // Log + Toast para debug
-        Toast.makeText(context, "🔴 Modo Estudo Desativado", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, " Modo Estudo Desativado", Toast.LENGTH_SHORT).show()
         Log.d("StudyMode", "Modo Estudo DESATIVADO: saiu da geofence")
     }
 }

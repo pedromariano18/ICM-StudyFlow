@@ -29,7 +29,7 @@ fun QrScannerScreen(
                 setBeepEnabled(true)
                 setOrientationLocked(false)
                 setPrompt("Scan QR code")
-                setCameraId(1) // Use a specific camera of the device
+                setCameraId(1) // Usa a câmara interna do dispositivo
             }
         )
     }

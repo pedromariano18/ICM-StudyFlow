@@ -16,11 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import com.example.studyflow.location.GeofencingManager
+import com.example.studyflow.location.StudyModeManager
 import com.example.studyflow.presentation.NavGraphs
 import com.example.studyflow.presentation.destinations.SessionScreenRouteDestination
 import com.example.studyflow.presentation.session.StudySessionTimerService
 import com.example.studyflow.presentation.theme.StudyflowTheme
-import com.example.studyflow.util.StudyModeManager
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,12 +57,12 @@ class MainActivity : ComponentActivity() {
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             ) == android.content.pm.PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d("Geofence", "🟢 Permissão confirmada em onResume")
-            // Inicializa o StudyModeManager e registra o geofence
+            Log.d("Geofence", " Permissão confirmada no onResume")
+            // Inicializa o StudyModeManager e regista o geofence
             StudyModeManager.init(this)
             registerGeofence()
         } else {
-            Log.e("Geofence", "🔴 Permissão de localização NÃO concedida em onResume")
+            Log.e("Geofence", " Permissão de localização não concedida no onResume")
         }
     }
 
@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        requestPermission() // Solicita as permissões necessárias
+        requestPermission()
     }
 
     private fun requestPermission() {
@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
                 StudyModeManager.init(this)
                 registerGeofence()
             } else {
-                Log.e("Geofence", "Permissão de localização NÃO concedida no onRequestPermissionsResult")
+                Log.e("Geofence", "Permissão de localização não concedida no onRequestPermissionsResult")
             }
         }
     }
@@ -119,10 +119,10 @@ class MainActivity : ComponentActivity() {
         isBound = false
     }
 
-    // Método privado para registrar o geofence com as coordenadas desejadas
+    // Registar o geofence com as coordenadas desejadas
     private fun registerGeofence() {
         Log.d("TestGeofence", "Chamando registerGeofence()")
-        // Coordenadas da Biblioteca Universitária de Aveiro (convertidas)
+        // Coordenadas da Biblioteca Universitária de Aveiro
         val studyZoneLatitude = 40.631078
         val studyZoneLongitude =  -8.659624
         val radiusInMeters = 100f
