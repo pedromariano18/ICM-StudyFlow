@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
         isBound = false
     }
 
-    // Método privado para registrar o geofence com as coordenadas desejadas
+
     private fun registerGeofence() {
         Log.d("TestGeofence", "Chamando registerGeofence()")
         // Coordenadas da Biblioteca Universitária de Aveiro (convertidas)
