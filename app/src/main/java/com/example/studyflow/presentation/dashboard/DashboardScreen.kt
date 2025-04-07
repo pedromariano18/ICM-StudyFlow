@@ -287,14 +287,14 @@ private fun DashboardScreen(
                         .padding(horizontal = 12.dp)
                 ) {
                     Text(
-                        text = "RECOMENDAÇÕES DE ESTUDO",
+                        text = "STUDY RECOMMENDATIONS",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
 
                     if (recommendations.isEmpty()) {
                         Text(
-                            text = "Sem recomendações no momento.",
+                            text = "No recommendations at this time.",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Gray
                         )
